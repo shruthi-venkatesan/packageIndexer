@@ -1,6 +1,6 @@
 *Packages* are executables or libraries that can be installed in a system, often via a package manager such as apt, RPM, or Homebrew. Many packages use libraries that are also made available as packages themselves, so usually a package will require you to install its dependencies before you can install it on your system.
 
-The system you are going to write keeps track of package dependencies. Clients will connect to your server and inform which packages should be indexed, and which dependencies they might have on other packages. We want to keep our index consistent, so your server must not index any package until all of its dependencies have been indexed first. The server should also not remove a package if any other packages depend on it.
+The system keeps track of package dependencies. Clients will connect to the server and inform which packages should be indexed, and which dependencies they might have on other packages. We want to keep our index consistent, so the server must not index any package until all of its dependencies have been indexed first. The server should also not remove a package if any other packages depend on it.
 
 The server will open a TCP socket on port 8080. It must accept connections from multiple clients at the same time, all trying to add and remove items to the index concurrently. Clients are independent of each other, and it is expected that they will send repeated or contradicting messages. New clients can connect and disconnect at any moment, and sometimes clients can behave badly and try to send broken messages.
 
