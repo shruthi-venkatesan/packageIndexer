@@ -39,6 +39,7 @@ The response code returned should be as follows:
 USAGE
 * After pulling from the repository, compile the java files together and run the server as
 ```
+javac packageIndexer/*.java
 java packageIndexer.PkgIndexerServer
 ```
 * The server can be run in a docker container as follows:
@@ -47,6 +48,7 @@ sudo docker build -t pkgindexer .
 sudo docker run -p 8080:8080 pkgindexer
 ```
 LOGGING
+```
 Sep 06, 2017 6:02:08 PM packageIndexer.WorkerRunnable run
 INFO: REQ:QUERY|git-fixup|RES:OK
 Sep 06, 2017 6:02:08 PM packageIndexer.WorkerRunnable run
@@ -55,3 +57,4 @@ Sep 06, 2017 6:02:08 PM packageIndexer.WorkerRunnable run
 INFO: REQ:INDEX|jena|RES:OK
 Sep 06, 2017 6:02:08 PM packageIndexer.WorkerRunnable run
 INFO: REQ:REMOVE|git-fixup|RES:OK
+```
