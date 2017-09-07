@@ -39,7 +39,7 @@ The response code returned should be as follows:
 **DESIGN**
 
 One of the first design decisions is to persist the index for the lifetime of the server i.e the index is not stored on disk. 
-The second assumption is the input queries will not lead to a cyclic dependency between packages.
+The indexer is coded with the assumption that the client queries will not lead to a cyclic dependency between packages.
 
 The server is launched from the PkgIndexerServer class. For scaling our server, rather than starting a new thread per incoming connection, the connection is wrapped in a Runnable and handed off to a thread poool with a fixed number of threads. When a thread in the thread pool is idle, it will take a Runnable from the queue and execute it. Instead of executing all the requests concurrently, we execute a fixed number of requests concurrently and queue the rest up thereby improving the performance. To exit the server, ctrl+c needs to be issued.
 
