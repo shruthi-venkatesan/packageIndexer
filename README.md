@@ -36,6 +36,12 @@ The response code returned should be as follows:
 * For `QUERY` commands, the server returns `OK\n` if the package is indexed. It returns `FAIL\n` if the package isn't indexed.
 * If the server doesn't recognize the command or if there's any problem with the message sent by the client it should return `ERROR\n`.
 
+**DESIGN**
+
+The server is launched from the PkgIndexerServer class. For scaling our server, rather than starting a new thread per incoming connection, the connection is wrapped in a Runnable and handed off to a thread poool with a fixed number of threads. When a thread in the thread pool is idle, it will take a Runnable from the queue and execute it. Instead of executing all the requests concurrently, we execute a fixed number of requests concurrently and queue the rest up thereby improving the performance. To exit the server, ctrl+c needs to be issued.
+
+A Hashmap is used to maintain the index in memory with key as package name and value as the *Pkg* object. We use a Synchronized map in JAVA to ensure that the entire index is locked while doing concurrent operations. A *Pkg* object consists of package name and its dependencies. The dependencies are currently stored as list of strings to simplify the implementation. Hashmap is used to guarantee a O(1) insertion, deletion and access. However, during removal of a single pacakge, the entire map's values have to be traversed to ensure the current package is not a dependent of any other package making removal expensive. Query takes 0(1). While indexing, since we need to ensure all the dependencies of this package are already indexed it will take O(n) where n is the number of dependencies of the package to be indexed. 
+
 **USAGE**
 * After pulling from the repository, compile the java files together and run the server as
 ```
