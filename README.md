@@ -38,6 +38,9 @@ The response code returned should be as follows:
 
 **DESIGN**
 
+One of the first design decisions is to persist the index for the lifetime of the server i.e the index is not stored on disk. 
+The second assumption is the input queries will not lead to a cyclic dependency between packages.
+
 The server is launched from the PkgIndexerServer class. For scaling our server, rather than starting a new thread per incoming connection, the connection is wrapped in a Runnable and handed off to a thread poool with a fixed number of threads. When a thread in the thread pool is idle, it will take a Runnable from the queue and execute it. Instead of executing all the requests concurrently, we execute a fixed number of requests concurrently and queue the rest up thereby improving the performance. To exit the server, ctrl+c needs to be issued.
 
 A Hashmap is used to maintain the index in memory with key as package name and value as the *Pkg* object. We use a Synchronized map in JAVA to ensure that the entire index is locked while doing concurrent operations. A *Pkg* object consists of package name and its dependencies. The dependencies are currently stored as list of strings to simplify the implementation. Hashmap is used to guarantee a O(1) insertion, deletion and access. However, during removal of a single pacakge, the entire map's values have to be traversed to ensure the current package is not a dependent of any other package making removal expensive. Query takes 0(1). While indexing, since we need to ensure all the dependencies of this package are already indexed it will take O(n) where n is the number of dependencies of the package to be indexed. 
